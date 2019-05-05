@@ -4,6 +4,7 @@ namespace pointybeard\Helpers\Cli\ProgressBar;
 
 use pointybeard\Helpers\Statistics\SlidingAverage;
 use pointybeard\Helpers\Cli\Colour;
+use pointybeard\Helpers\Functions\Time;
 
 class ProgressBar
 {
@@ -66,7 +67,7 @@ class ProgressBar
      */
     private function hasStarted()
     {
-        return is_null($this->start);
+        return !is_null($this->start);
     }
 
     /**
@@ -145,7 +146,7 @@ class ProgressBar
             $result .= $this->charProgress();
         }
 
-        return Colour\Colour::colouriseString(
+        return Colour\Colour::colourise(
             $result,
             $this->foreground(),
             $this->background()
@@ -159,11 +160,11 @@ class ProgressBar
             'PERCENTAGE' => number_format($this->percentageCompleted() * 100.0, 2),
             'COMPLETED' => $this->completed,
             'TOTAL' => $this->total,
-            'ELAPSED_TIME' => human_readable_time($this->elapsedTime(), true),
+            'ELAPSED_TIME' => Time\human_readable_time($this->elapsedTime(), true),
             'REMAINING_TIME' => (
                 $this->elapsedTime() < 3
                     ? '?'
-                    : human_readable_time($this->remainingTime(), true)
+                    : Time\human_readable_time($this->remainingTime(), true)
             ),
         ];
     }
