@@ -1,6 +1,6 @@
 # PHP Helpers: Command-line Progress Bar
 
--   Version: v1.0.1
+-   Version: v1.0.2
 -   Date: May 05 2019
 -   [Release notes](https://github.com/pointybeard/helpers-cli-progressbar/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-cli-progressbar)
