@@ -23,13 +23,13 @@
         "block8/php-docblock-checker": "~1.10"
     },
     "support": {
-      "issues": "https://github.com/pointybeard/helpers-cli-progressbar/issues",
-      "wiki": "https://github.com/pointybeard/helpers-cli-progressbar/wiki"
+        "issues": "https://github.com/pointybeard/helpers-cli-progressbar/issues",
+        "wiki": "https://github.com/pointybeard/helpers-cli-progressbar/wiki"
     },
     "minimum-stability": "stable",
     "autoload": {
         "psr-4": {
-            "pointybeard\\Helpers\\Cli": "src/"
+            "pointybeard\\Helpers\\Cli\\": "src/"
         }
     }
 }
