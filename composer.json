@@ -1,6 +1,6 @@
 {
     "name": "pointybeard/helpers-cli-progressbar",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Utility for rendering a progress bar to the command line in PHP",
     "homepage": "https://github.com/pointybeard/helpers-cli-progressbar",
     "license": "MIT",
@@ -16,7 +16,7 @@
         "php": ">=5.6.6",
         "pointybeard/helpers-cli-colour": "~1.0",
         "pointybeard/helpers-statistics-slidingaverage": "~1.0",
-        "pointybeard/helpers-time-functions": "~1.0"
+        "pointybeard/helpers-functions-time": "~1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5",
