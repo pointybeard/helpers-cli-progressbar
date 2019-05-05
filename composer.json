@@ -1,6 +1,6 @@
 {
     "name": "pointybeard/helpers-cli-progressbar",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Utility for rendering a progress bar to the command line in PHP",
     "homepage": "https://github.com/pointybeard/helpers-cli-progressbar",
     "license": "MIT",

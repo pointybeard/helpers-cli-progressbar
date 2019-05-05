@@ -1,6 +1,6 @@
 # PHP Helpers: Command-line Progress Bar
 
--   Version: v1.0.2
+-   Version: v1.0.3
 -   Date: May 05 2019
 -   [Release notes](https://github.com/pointybeard/helpers-cli-progressbar/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-cli-progressbar)
@@ -26,25 +26,31 @@ To include all the [PHP Helpers](https://github.com/pointybeard/helpers) package
 
 Include this library in your PHP files with `use pointybeard\Helpers\Cli\ProgressBar` and instanciate the `ProgressBar\ProgressBar` class like so:
 
-    <?php
-    use pointybeard\Helpers\Cli\ProgressBar
+```php
+<?php
 
-    $progress = (new ProgressBar\ProgressBar(100))
-        ->length(30)
-        ->foreground(Cli\Colour::FG_GREEN)
-        ->background(Cli\Colour::BG_RED)
-    ;
+include __DIR__ . "/vendor/autoload.php";
 
-    // Optional. Seeds the start time of the progress bar. time() is used
-    // if omitted.
-    $progress->start();
+use pointybeard\Helpers\Cli\ProgressBar;
+use pointybeard\Helpers\Cli\Colour;
 
-    for($ii = 0; $ii < 100; $ii++) {
-        usleep(500000);
+$progress = (new ProgressBar\ProgressBar(100))
+    ->length(30)
+    ->foreground(Colour\Colour::FG_GREEN)
+    ->background(Colour\Colour::BG_DEFAULT)
+;
 
-        // This moves the progress forward (default is 1 unit) and redraws it
-        $progress->advance();
-    }
+// Optional. Seeds the start time of the progress bar. time() is used
+// if omitted.
+$progress->start();
+
+for($ii = 0; $ii < 100; $ii++) {
+    usleep(500000);
+
+    // This moves the progress forward (default is 1 unit) and redraws it
+    $progress->advance();
+}
+```
 
 ### Placeholders
 
