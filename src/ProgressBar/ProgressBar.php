@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace pointybeard\Helpers\Cli\ProgressBar;
 
 use pointybeard\Helpers\Statistics\SlidingAverage;
 use pointybeard\Helpers\Cli\Colour;
 use pointybeard\Helpers\Functions\Time;
+use pointybeard\Helpers\Functions\Cli;
+use pointybeard\Helpers\Functions\Strings;
 
 class ProgressBar
 {
@@ -16,13 +20,14 @@ class ProgressBar
     private $charBlank = '░';
     private $foreground = Colour\Colour::FG_DEFAULT;
     private $background = Colour\Colour::BG_DEFAULT;
-    private $format = "{{PROGRESS_BAR}} {{PERCENTAGE}}% {{COMPLETED}}/{{TOTAL}} ({{ELAPSED_TIME}} elapsed, approx. {{REMAINING_TIME}} remaining)";
+    private $format = '{{PROGRESS_BAR}} {{PERCENTAGE}}% {{COMPLETED}}/{{TOTAL}} ({{ELAPSED_TIME}} elapsed, approx. {{REMAINING_TIME}} remaining)';
 
     private $rateAverage = null;
 
     /**
      * Initialise the ProgressBar class by setting the total number of
      * work units it will be tracking.
+     *
      * @param int $total
      */
     public function __construct($total)
@@ -34,10 +39,12 @@ class ProgressBar
      * Magic method for getting and setting private variables. If $args is,
      * this method will instead return the value. When setting the value, an
      * instance of this class is returned, allowing method chaining.
-     * @param  string $name the name of the class variable to get/set
-     * @param  mixed $args value to assign to variable (optional)
-     * @return mixed       Will return the value of the variable of $args
-     *                     has been omitted, otherwise an instance of $this
+     *
+     * @param string $name the name of the class variable to get/set
+     * @param mixed  $args value to assign to variable (optional)
+     *
+     * @return mixed Will return the value of the variable of $args
+     *               has been omitted, otherwise an instance of $this
      */
     public function __call($name, $args)
     {
@@ -46,47 +53,56 @@ class ProgressBar
         }
 
         $this->$name = $args[0];
+
         return $this;
     }
 
     /**
      * Sets the start time which is used internally to calculate the elapsed and
      * remaining time.
-     * @param  int $time value to seed $this->start with (optional)
-     * @return self       instance of $this
+     *
+     * @param int $time value to seed $this->start with (optional)
+     *
+     * @return self instance of $this
      */
-    public function start($time = null)
+    public function start(int $time = null): self
     {
-        $this->start = is_null($time) ? time() : $time;
+        $this->start = (
+            null === $time
+                ? time()
+                : $time
+        );
+
         return $this;
     }
 
     /**
-     * Convenience method for determining of the start time has been set
-     * @return boolean true if it has been set
+     * Convenience method for determining of the start time has been set.
+     *
+     * @return bool true if it has been set
      */
-    private function hasStarted()
+    private function hasStarted(): bool
     {
-        return !is_null($this->start);
+        return null !== $this->start;
     }
 
     /**
      * Increase the work units completed by $units (Default is 1), then redraw
      * the progress bar.
-     * @param  integer $units A value to increase the progress bar by.
-     * @return void
+     *
+     * @param int $units a value to increase the progress bar by
      */
-    public function advance($units = 1)
+    public function advance(int $units = 1)
     {
         if (!$this->hasStarted()) {
             $this->start();
         }
 
-        $this->completed += $units;
+        $this->completed = min($this->total, $this->completed + $units);
         $this->draw();
     }
 
-    public function rate()
+    public function rate(): float
     {
         $instantaneousRate = $this->completed / (time() - $this->start);
 
@@ -102,29 +118,28 @@ class ProgressBar
         return $this->rateAverage->sample();
     }
 
-    public function remaining()
+    public function remaining(): int
     {
         return $this->total - $this->completed;
     }
 
-    public function elapsedTime()
+    public function elapsedTime(): int
     {
         return time() - $this->start;
     }
 
-    public function remainingTime()
+    public function remainingTime(): int
     {
-        return $this->remaining() / $this->rate();
+        return (int) round($this->remaining() / $this->rate());
     }
 
-    public function percentageCompleted()
+    public function percentageCompleted(): float
     {
-        return (double)$this->completed / (double)$this->total;
+        return (float) $this->completed / (float) $this->total;
     }
 
-    private function buildProgressBar()
+    private function buildProgressBar(): string
     {
-
         // This prevents broken characters
         $realLength = $this->length() * strlen($this->charBlank());
 
@@ -134,7 +149,7 @@ class ProgressBar
             )
         );
 
-        $result = str_repeat($this->charProgress(), $completedLength);
+        $result = str_repeat($this->charProgress(), (int) $completedLength);
 
         if ($completedLength < $realLength) {
             $result = str_pad(
@@ -153,7 +168,7 @@ class ProgressBar
         );
     }
 
-    private function buildArgs()
+    private function buildArgs(): array
     {
         return [
             'PROGRESS_BAR' => $this->buildProgressBar(),
@@ -169,7 +184,7 @@ class ProgressBar
         ];
     }
 
-    private static function replacePlaceholdersInString(array $placeholders, array $replacements, $string)
+    private static function replacePlaceholdersInString(array $placeholders, array $replacements, string $input): string
     {
         $search = array_map(
             function ($value) {
@@ -178,20 +193,20 @@ class ProgressBar
             $placeholders
         );
 
-        return str_replace($search, $replacements, $string);
+        return str_replace($search, $replacements, $input);
     }
 
-    public function draw()
+    public function draw(): void
     {
         $args = $this->buildArgs();
 
-        printf(
+        echo Strings\mb_str_pad(sprintf(
             "\r%s",
             self::replacePlaceholdersInString(
                 array_keys($args),
                 array_values($args),
                 $this->format
             )
-        );
+        ), (Cli\get_window_size())['cols'] - 1, ' ', STR_PAD_RIGHT);
     }
 }
