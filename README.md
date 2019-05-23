@@ -1,7 +1,7 @@
 # PHP Helpers: Command-line Progress Bar
 
--   Version: v1.0.3
--   Date: May 05 2019
+-   Version: v1.1.0
+-   Date: May 23 2019
 -   [Release notes](https://github.com/pointybeard/helpers-cli-progressbar/blob/master/CHANGELOG.md)
 -   [GitHub repository](https://github.com/pointybeard/helpers-cli-progressbar)
 
@@ -18,7 +18,7 @@ And run composer to update your dependencies:
 
 ### Requirements
 
-This library makes use of the [PHP Helpers: Sliding Average](https://github.com/pointybeard/helpers-statistics-slidingaverage) (`pointybeard/helpers-statistics-slidingaverage`), [PHP Helpers: Command-line Colours](https://github.com/pointybeard/helpers-cli-colour) (`pointybeard/helpers-cli-colour`), and [PHP Helpers: Time Functions](https://github.com/pointybeard/helpers-time-functions) (`pointybeard/helpers-time-functions`) packages. They are installed automatically via composer.
+This library makes use of the [PHP Helpers: Sliding Average](https://github.com/pointybeard/helpers-statistics-slidingaverage) (`pointybeard/helpers-statistics-slidingaverage`), [PHP Helpers: Command-line Colours](https://github.com/pointybeard/helpers-cli-colour) (`pointybeard/helpers-cli-colour`), and [PHP Helpers: Time Functions](https://github.com/pointybeard/helpers-functions-time) (`pointybeard/helpers-functions-time`) packages. They are installed automatically via composer.
 
 To include all the [PHP Helpers](https://github.com/pointybeard/helpers) packages on your project, use `composer require pointybeard/helpers` or add `"pointybeard/helpers": "~1.0"` to your composer file.
 
@@ -34,22 +34,29 @@ include __DIR__ . "/vendor/autoload.php";
 use pointybeard\Helpers\Cli\ProgressBar;
 use pointybeard\Helpers\Cli\Colour;
 
-$progress = (new ProgressBar\ProgressBar(100))
+$progress = (new ProgressBar\ProgressBar(rand(100,300)))
     ->length(30)
     ->foreground(Colour\Colour::FG_GREEN)
     ->background(Colour\Colour::BG_DEFAULT)
+    ->format("{{PROGRESS_BAR}} {{PERCENTAGE}}% {{COMPLETED}}/{{TOTAL}} ({{REMAINING_TIME}} remaining)")
 ;
 
 // Optional. Seeds the start time of the progress bar. time() is used
 // if omitted.
 $progress->start();
 
-for($ii = 0; $ii < 100; $ii++) {
-    usleep(500000);
+do {
 
     // This moves the progress forward (default is 1 unit) and redraws it
     $progress->advance();
-}
+
+    // Slow the script down so we can see what's happening
+    usleep(5000);
+
+} while($progress->remaining() > 0);
+
+print PHP_EOL . "Work complete!" . PHP_EOL;
+
 ```
 
 ### Placeholders
