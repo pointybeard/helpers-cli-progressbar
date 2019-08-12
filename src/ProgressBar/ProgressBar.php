@@ -21,6 +21,7 @@ class ProgressBar
     private $foreground = Colour\Colour::FG_DEFAULT;
     private $background = Colour\Colour::BG_DEFAULT;
     private $format = '{{PROGRESS_BAR}} {{PERCENTAGE}}% {{COMPLETED}}/{{TOTAL}} ({{ELAPSED_TIME}} elapsed, approx. {{REMAINING_TIME}} remaining)';
+    private $samples = 0.10; //10%
 
     private $rateAverage = null;
 
@@ -108,7 +109,7 @@ class ProgressBar
 
         if (!($this->rateAverage instanceof SlidingAverage\SlidingAverage)) {
             $this->rateAverage = new SlidingAverage\SlidingAverage(
-                floor($this->total * 0.10), // Total samples is 10%
+                max(1, floor($this->total * $this->samples)),
                 $instantaneousRate
             );
         } else {
