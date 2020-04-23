@@ -29,16 +29,18 @@ Include this library in your PHP files with `use pointybeard\Helpers\Cli\Progres
 ```php
 <?php
 
-include __DIR__ . "/vendor/autoload.php";
+declare(strict_types=1);
+
+include __DIR__.'/vendor/autoload.php';
 
 use pointybeard\Helpers\Cli\ProgressBar;
 use pointybeard\Helpers\Cli\Colour;
 
-$progress = (new ProgressBar\ProgressBar(rand(100,300)))
+$progress = (new ProgressBar\ProgressBar(rand(10000, 20000)))
     ->length(30)
     ->foreground(Colour\Colour::FG_GREEN)
     ->background(Colour\Colour::BG_DEFAULT)
-    ->format("{{PROGRESS_BAR}} {{PERCENTAGE}}% {{COMPLETED}}/{{TOTAL}} ({{REMAINING_TIME}} remaining)")
+    ->format('{{PROGRESS_BAR}} {{PERCENTAGE}}% {{COMPLETED}}/{{TOTAL}} ({{REMAINING_TIME}} remaining)')
 ;
 
 // Optional. Seeds the start time of the progress bar. time() is used
@@ -46,16 +48,14 @@ $progress = (new ProgressBar\ProgressBar(rand(100,300)))
 $progress->start();
 
 do {
-
     // This moves the progress forward (default is 1 unit) and redraws it
     $progress->advance();
 
     // Slow the script down so we can see what's happening
-    usleep(5000);
+    usleep(rand(5000, 20000));
+} while ($progress->remaining() > 0);
 
-} while($progress->remaining() > 0);
-
-print PHP_EOL . "Work complete!" . PHP_EOL;
+echo PHP_EOL.'Work complete!'.PHP_EOL;
 
 ```
 
