@@ -176,11 +176,11 @@ class ProgressBar
             'PERCENTAGE' => number_format($this->percentageCompleted() * 100.0, 2),
             'COMPLETED' => $this->completed,
             'TOTAL' => $this->total,
-            'ELAPSED_TIME' => Time\human_readable_time($this->elapsedTime(), true),
+            'ELAPSED_TIME' => Time\human_readable_time($this->elapsedTime(), null),
             'REMAINING_TIME' => (
                 $this->elapsedTime() < 3
                     ? '?'
-                    : Time\human_readable_time($this->remainingTime(), true)
+                    : Time\human_readable_time($this->remainingTime(), null)
             ),
         ];
     }
